@@ -219,6 +219,7 @@
   pointer-events: none;
   opacity: 0;
   mix-blend-mode: difference;
+  will-change: transform, opacity;
 }
 
 .cursor-dot {

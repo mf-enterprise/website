@@ -20,21 +20,29 @@ export default function CustomCursor() {
 
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
+    let dx = mx;
+    let dy = my;
     let rx = mx;
     let ry = my;
     let hover = false;
+    let visible = false;
     let raf = 0;
 
     const onMove = (e) => {
       mx = e.clientX;
       my = e.clientY;
-      dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
-      dot.style.opacity = '1';
-      ring.style.opacity = '1';
+      if (!visible) {
+        visible = true;
+        dot.style.opacity = '1';
+        ring.style.opacity = '1';
+      }
     };
     const tick = () => {
+      dx += (mx - dx) * 0.6;
+      dy += (my - dy) * 0.6;
       rx += (mx - rx) * 0.16;
       ry += (my - ry) * 0.16;
+      dot.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
       ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
       raf = requestAnimationFrame(tick);
     };
@@ -54,8 +62,16 @@ export default function CustomCursor() {
 
     const onDown = () => ring.classList.add('cursor-down');
     const onUp = () => ring.classList.remove('cursor-down');
-    const onLeave = () => { ring.style.opacity = '0'; dot.style.opacity = '0'; };
-    const onEnter = () => { ring.style.opacity = '1'; dot.style.opacity = '1'; };
+    const onLeave = () => {
+      visible = false;
+      ring.style.opacity = '0';
+      dot.style.opacity = '0';
+    };
+    const onEnter = () => {
+      visible = true;
+      ring.style.opacity = '1';
+      dot.style.opacity = '1';
+    };
 
     document.addEventListener('mousemove', onMove, { passive: true });
     document.addEventListener('mouseover', onOver, { passive: true });
